@@ -7,6 +7,11 @@ import types
 import pytest
 from fastapi.testclient import TestClient
 
+# Async helper for signal method
+async def _async_noop(*a, **kw):
+    """Async no-op function for stubbing async methods."""
+    pass
+
 # Stub external modules before importing our code
 sys.modules.setdefault("temporalio", types.ModuleType("temporalio"))
 sys.modules.setdefault("temporalio.client", types.ModuleType("temporalio.client"))
@@ -17,7 +22,7 @@ class _FakeClient:
     async def start_workflow(self, *a, **kw): pass
     def get_workflow_handle(self, wf_id):
         obj = types.SimpleNamespace()
-        obj.signal = lambda *a, **kw: None
+        obj.signal = _async_noop  # Must be async-compatible
         return obj
 
 sys.modules["temporalio.client"].Client = _FakeClient
@@ -80,7 +85,8 @@ pg_mod.db = _FakeDB()
 wf_mod = types.ModuleType("contract_worker.workflow")
 wf_mod.ContractReviewInput = type("ContractReviewInput", (), {})
 wf_mod.ContractReviewWorkflow = type("ContractReviewWorkflow", (), {"run": lambda *a, **kw: None})
-wf_mod.ReviewDecisionSignal = type("ReviewDecisionSignal", (), {})
+# ReviewDecisionSignal stub must accept arbitrary kwargs for signal instantiation
+wf_mod.ReviewDecisionSignal = type("ReviewDecisionSignal", (), {"__init__": lambda self, *a, **kw: None})
 sys.modules["contract_worker.workflow"] = wf_mod
 
 # Import app and TestClient
