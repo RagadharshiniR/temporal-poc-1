@@ -1,0 +1,93 @@
+name: contractiq
+
+services:
+  postgres:
+    container_name: contractiq-postgres
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: temporal
+      POSTGRES_USER: temporal
+      POSTGRES_DB: contracts
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U temporal -d contracts"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  temporal:
+    container_name: contractiq-temporal
+    image: temporalio/auto-setup:1.24
+    ports:
+      - "7233:7233"
+    environment:
+      DB: postgres12
+      DB_PORT: 5432
+      POSTGRES_USER: temporal
+      POSTGRES_PWD: temporal
+      POSTGRES_SEEDS: postgres
+      DBNAME: contracts
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  temporal-ui:
+    container_name: contractiq-temporal-ui
+    image: temporalio/ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+    depends_on:
+      - temporal
+
+  worker:
+    container_name: contractiq-worker
+    build:
+      context: .
+      dockerfile: worker.Dockerfile
+    env_file:
+      - .env
+    environment:
+      TEMPORAL_HOST: ${TEMPORAL_HOST:-temporal}
+      TEMPORAL_PORT: ${TEMPORAL_PORT:-7233}
+      PYTHONUNBUFFERED: ${PYTHONUNBUFFERED:-1}
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USER: ${DB_USER:-temporal}
+      DB_PASSWORD: ${DB_PASSWORD:-temporal}
+      DB_NAME: ${DB_NAME:-contracts}
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-}
+    depends_on:
+      - temporal
+    volumes:
+      - ./contract_worker:/app/contract_worker
+      - ./data:/app/data
+    restart: unless-stopped
+
+  api-server:
+    container_name: contractiq-api-server
+    build:
+      context: .
+      dockerfile: api.Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      TEMPORAL_HOST: ${TEMPORAL_HOST:-temporal}
+      TEMPORAL_PORT: ${TEMPORAL_PORT:-7233}
+      PYTHONUNBUFFERED: ${PYTHONUNBUFFERED:-1}
+    depends_on:
+      - temporal
+    volumes:
+      - ./api_server:/app/api_server
+      - ./data:/app/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

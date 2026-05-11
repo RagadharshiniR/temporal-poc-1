@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContractIQ — AI · Human · In-the-Loop</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">⚖</div>
+        ContractIQ
+      </div>
+      <div class="logo-sub">AI · User · In-the-Loop</div>
+    </div>
+
+    <div class="upload-section">
+      <div class="section-label">Upload Contract</div>
+
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icon">📄</div>
+        <div class="drop-text">Click or drag & drop</div>
+        <div class="drop-hint">PDF · DOCX · TXT</div>
+        <input type="file" id="fileInput" accept=".pdf,.docx,.doc,.txt" />
+        <div class="file-chosen" id="fileChosen" style="display:none;"></div>
+      </div>
+
+      <div class="field">
+        <label>Reviewer Email</label>
+        <input type="email" id="reviewerEmail" placeholder="you@company.com" />
+      </div>
+
+      <button class="btn-upload" id="uploadBtn">
+        <span>Upload & Start Review</span>
+      </button>
+      <div class="upload-msg" id="uploadMsg"></div>
+    </div>
+
+    <div class="contracts-section">
+      <div class="section-label">Recent Contracts</div>
+      <div class="contract-filters">
+        <button class="filter-chip active" id="filter-all" onclick="setContractFilter('all')">All</button>
+        <button class="filter-chip" id="filter-review" onclick="setContractFilter('review')">Review</button>
+        <button class="filter-chip" id="filter-approved" onclick="setContractFilter('approved')">Approved</button>
+        <button class="filter-chip" id="filter-escalated" onclick="setContractFilter('escalated')">Escalated</button>
+      </div>
+      <div id="contractList">
+        <p style="color:var(--text3);font-size:12px;line-height:1.8;font-family:var(--sf);">
+          No contracts yet — upload one to begin.
+        </p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main" id="mainArea">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📋</div>
+      <div class="empty-title">No contract selected</div>
+      <div class="empty-desc">Upload a contract to see AI analysis, risk score, clause breakdown, and take review actions.</div>
+    </div>
+
+    <div class="detail" id="detailPanel" style="display:none;"></div>
+  </main>
+</div>
+
+<script src="/static/app.js" defer></script>
+</body>
+</html>

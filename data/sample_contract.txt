@@ -1,0 +1,37 @@
+MASTER SERVICE AGREEMENT
+
+Effective Date: January 1, 2024
+
+This Master Service Agreement ("Agreement") is entered into between Company ("Client") 
+and Vendor ("Service Provider").
+
+1. SERVICES
+Service Provider agrees to provide software development and consulting services as 
+described in individual Statements of Work.
+
+2. INDEMNIFICATION
+Each party shall indemnify and hold harmless the other from any third-party claims 
+arising from its breach of this Agreement or negligence.
+
+3. INTELLECTUAL PROPERTY RIGHTS
+All work product, code, and intellectual property created by Service Provider shall 
+belong to the Client. Service Provider retains rights to pre-existing IP.
+
+4. PAYMENT TERMS
+Client shall pay Service Provider within Net 30 days of invoice receipt. 
+2% discount for payment within 10 days.
+
+5. LIABILITY LIMITATION
+In no event shall either party's liability exceed 12 months of fees paid hereunder.
+Neither party shall be liable for indirect or consequential damages.
+
+6. TERMINATION
+Either party may terminate this Agreement with 30 days written notice. 
+Immediate termination allowed for material breach if not cured within 15 days.
+
+7. CONFIDENTIALITY
+The parties agree to maintain strict confidentiality of proprietary information 
+for a period of 3 years.
+
+8. GOVERNING LAW
+This Agreement shall be governed by the laws of New York, USA.
